@@ -1,0 +1,25 @@
+{
+  "name": "plywright-demo-typescript",
+  "version": "1.0.0",
+  "description": "Comprehensive Playwright test automation suite for Icon Generator application",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "playwright test",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:desktop": "playwright test --project=chrome --project=firefox --project=webkit",
+    "test:mobile": "playwright test --project=mobile-chrome --project=mobile-safari",
+    "test:report": "playwright show-report"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.5.3"
+  },
+  "private": true
+}
+
+
