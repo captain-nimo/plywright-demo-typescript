@@ -20,9 +20,12 @@ export default defineConfig({
   outputDir: 'test-results',
   use: {
     baseURL: process.env.BASE_URL || 'https://engineer-coding-challenge-frontend.vercel.app/',
-    trace: 'on-first-retry',
+    trace: 'on',
+    actionTimeout: 0,
+    ignoreHTTPSErrors: true,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    headless: true,
   },
 
   projects: [
