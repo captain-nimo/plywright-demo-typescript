@@ -1,4 +1,4 @@
-import { test as base, expect, Page, TestInfo } from '@playwright/test';
+import { test as base, expect, Page } from '@playwright/test';
 // @ts-ignore TS2306: imported file is not a module (legacy/commonjs). Silence until modules are fixed.
 import { IconGeneratorPage } from '../pages/IconGeneratorPage';
 // @ts-ignore TS2306: imported file is not a module (legacy/commonjs). Silence until modules are fixed.
@@ -20,14 +20,15 @@ export const test = base.extend<TestFixtures>({
     await use(iconGeneratorPage);
   },
 
-  testLogger: async ({ test: testInfo }: { test: TestInfo }, use: (value: TestLogger) => Promise<void>) => {
-    const testName = testInfo.title;
+  testLogger: async ({ testInfo }: any, use: (value: TestLogger) => Promise<void>) => {
+    const testName = testInfo.titlePath.join(' > ');
     const logger = new TestLogger(testName);
     await use(logger);
   },
 
-  debugHelper: async ({ page, test: testInfo }: { page: Page; test: TestInfo }, use: (value: DebugHelper) => Promise<void>) => {
-    const debugHelper = new DebugHelper(page, testInfo.title);
+  debugHelper: async ({ page, testInfo }: any, use: (value: DebugHelper) => Promise<void>) => {
+    const testName = testInfo.titlePath.join(' > ');
+    const debugHelper = new DebugHelper(page, testName);
     await use(debugHelper);
   },
 

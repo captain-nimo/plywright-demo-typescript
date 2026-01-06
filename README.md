@@ -13,159 +13,123 @@ This is a comprehensive test automation suite for the Icon Generator application
 ### Page Object Model (POM)
 The test suite implements the Page Object Model pattern for maintainability and scalability:
 
-- **`IconGeneratorPage.ts`** - Encapsulates all UI elements and interactions for the main application interface
-  - Locators for prompt input, generate button, icon container, etc.
-  - Methods for core interactions (generateIcons, setStyle, setColor, etc.)
-  - Accessibility verification methods
+#### IconGeneratorPage Class
+**File:** `tests/pages/IconGeneratorPage.ts`
+
+The `IconGeneratorPage` class encapsulates all interactions with the Icon Generator application:
+
+**Navigation & Setup:**
+- `goto()` - Navigate to the application
+- `setViewportSize(width, height)` - Set viewport for responsive testing
+- `wait(timeout)` - Wait for specified duration
+
+**Prompt Input Methods:**
+- `fillPrompt(text)` - Fill the prompt input field
+- `getPromptValue()` - Get current prompt input value
+- `clearPrompt()` - Clear the prompt input
+- `focusPrompt()` - Focus on the prompt input
+- `isPromptInputVisible()` - Check if prompt is visible
+- `waitForPromptInput(timeout)` - Wait for prompt to be visible
+
+**Generate Button Methods:**
+- `clickGenerateButton()` - Click the generate button
+- `isGenerateButtonVisible()` - Check if button is visible
+- `waitForGenerateButton(timeout)` - Wait for button to be visible
+
+**Icon Methods:**
+- `generateIcons(prompt)` - Generate icons with given prompt
+- `getIconCount()` - Get count of generated icons
+
+**Utility Methods:**
+- `getPageTitle()` - Get page title
+- `getPage()` - Access underlying Playwright page object
+
+**Usage Example:**
+```typescript
+import { test } from '../fixtures/fixture';
+
+test('example test', async ({ page }) => {
+  const iconGeneratorPage = new IconGeneratorPage(page);
+  await iconGeneratorPage.goto();
+  await iconGeneratorPage.fillPrompt('car');
+  await iconGeneratorPage.clickGenerateButton();
+  const count = await iconGeneratorPage.getIconCount();
+  expect(count).toBeGreaterThan(0);
+});
+```
 
 ### Test Fixtures & Utilities
 Custom test fixtures and utilities for enhanced test capabilities:
 
 - **`fixture.ts`** - Custom Playwright test fixtures
-  - `iconGeneratorPage` - Pre-initialized page object
-  - `testLogger` - Structured logging with timestamps
-  - `debugHelper` - Screenshot, trace, and state capture utilities
+  - `iconGeneratorPage` - Pre-initialized page object instance
+  - `testLogger` - Structured logging utility
+  - `debugHelper` - Debugging and diagnostic utilities
   - `assertions` - Domain-specific custom assertions
 
 - **`TestHelpers.ts`** - Reusable test utilities
-  - `IconGeneratorAssertions` - Custom assertions for icon generation
-  - `TestLogger` - Structured logging system
-  - `RetryHelper` - Retry logic with exponential backoff
-  - `TestDataFactory` - Test data generation
-  - `DebugHelper` - Debugging and diagnostic utilities
+  - `TestLogger` - Structured logging with timestamps (info, warn, error, success)
+  - `DebugHelper` - Debugging utilities (screenshots, page HTML, network activity, element inspection)
+  - `IconGeneratorAssertions` - Custom assertions for icon generation validation
+
+#### Using Fixtures in Tests
+
+```typescript
+import { test } from '../fixtures/fixture';
+
+test('using fixtures', async ({ iconGeneratorPage, testLogger, debugHelper, assertions }) => {
+  testLogger.info('Starting icon generation test');
+  
+  await iconGeneratorPage.goto();
+  await iconGeneratorPage.fillPrompt('smile');
+  await iconGeneratorPage.clickGenerateButton();
+  
+  const count = await iconGeneratorPage.getIconCount();
+  testLogger.success(`Generated ${count} icons`);
+  
+  await debugHelper.takeScreenshot('icon-generation-result');
+});
+```
 
 ### Test Configuration
 - **`playwright.config.ts`** - Playwright configuration with multi-browser setup
-- **`testConfig.ts`** - Centralized test configuration and constants
 
 ## Test Coverage
 
-### 1. **Core Functionality Tests** (`01-icon-generation.spec.ts`)
-Tests the fundamental icon generation features:
+### Icon Generator Tests (`icon-generator.spec.ts`)
+Comprehensive test suite for the Icon Generator application covering:
 
-- ✅ **Simple Icon Generation** - Generate exactly 8 icons from simple prompts
-- ✅ **Descriptive Prompts** - Handle longer, more descriptive prompts
-- ✅ **Special Characters & Emojis** - Support emoji and special character input
-- ✅ **Unicode Support** - Handle non-ASCII characters (e.g., Cyrillic)
-- ✅ **Sequential Generations** - Generate different icon sets sequentially
-- ✅ **Loading State** - Verify loading indicators during generation
-- ✅ **Rapid Generations** - Handle rapid successive generations
-- ✅ **Empty Prompt Validation** - Proper error handling for empty prompts
-- ✅ **Button State Management** - Correct enable/disable state handling
-- ✅ **Prompt Variety** - Test multiple prompt types systematically
-- ✅ **Whitespace Handling** - Gracefully handle whitespace-only prompts
-- ✅ **Accessibility** - Verify accessibility features for all prompt types
-
-**Coverage Score: 12 test cases**
-
-### 2. **Configuration & Customization Tests** (`02-configuration.spec.ts`)
-Tests style and color configuration options:
-
-- ✅ **Style Application** - Apply various style configurations
+- ✅ **Icon Generation** - Generate icons from various prompts
+- ✅ **Style Application** - Apply different style configurations
 - ✅ **Color Customization** - Apply color changes via color picker
-- ✅ **Icons After Style Change** - Verify icons persist after configuration changes
-- ✅ **Icons After Color Change** - Maintain generated icons after color change
-- ✅ **Hex Color Values** - Support various hex color formats
-- ✅ **Configuration Reset** - Reset to default configuration
-- ✅ **Configuration Persistence** - Preserve settings across generations
-- ✅ **Download Availability** - Download buttons for all generated icons
-- ✅ **Icon Download** - Download individual icons (with detection)
-- ✅ **Consistent Downloadable Icons** - Generate consistent icons for download
-- ✅ **Application Title** - Verify page title and metadata
-- ✅ **Responsive Elements** - Check UI element visibility
-- ✅ **Prompt Clearing** - Prompt field behavior after generation
-- ✅ **Focus Management** - Proper focus on page load
-- ✅ **Keyboard Navigation** - Support keyboard input
-- ✅ **Form Semantics** - Proper HTML form structure
-- ✅ **Rapid UI Interactions** - Handle rapid interaction sequences
-
-**Coverage Score: 17 test cases**
-
-### 3. **Responsive Design Tests** (`03-responsive.spec.ts`)
-Tests across multiple viewports and devices:
-
-#### Desktop Viewports:
-- ✅ Desktop (1920x1080) - Full desktop experience
-- ✅ Desktop Small (1366x768) - Smaller desktop monitors
-
-#### Tablet Viewports:
-- ✅ Tablet Portrait (768x1024) - iPad-like portrait
-- ✅ Tablet Landscape (1024x768) - iPad-like landscape
-
-#### Mobile Viewports:
-- ✅ Mobile Large (480x800) - Large phones
-- ✅ Mobile Standard (375x812) - iPhone 12 standard
-- ✅ Mobile Small (320x568) - Older devices (iPhone SE)
-
-#### Responsive Features:
-- ✅ **Orientation Changes** - Handle portrait to landscape transitions
-- ✅ **Icon Quality Across Devices** - Consistent quality on all viewports
-- ✅ **Touch Targets** - Proper button/touch element sizing (≥44px)
-- ✅ **Mobile Scrolling** - Support scrolling for long content
-- ✅ **iOS Safari** - Test on iPhone 12 emulation
-- ✅ **Android Chrome** - Test on Pixel 5 emulation
-
-**Coverage Score: 13 test cases + device emulation tests**
-
-### 4. **Edge Cases & Error Handling** (`04-edge-cases.spec.ts`)
-Tests error scenarios and boundary conditions:
-
-#### Error Handling:
-- ✅ **Network Timeout** - Graceful handling of network delays
-- ✅ **Broken Image Responses** - Handle missing/broken image responses
-- ✅ **Interrupted Generation** - Recover from interrupted operations
-
-#### Boundary Conditions:
-- ✅ **Very Long Prompts** - Handle extreme input lengths (1000+ characters)
-- ✅ **Single Character Prompts** - Minimal input handling
-- ✅ **Numeric Prompts** - Number-only input
-- ✅ **Alphanumeric Prompts** - Mixed character input
-- ✅ **Special Characters** - Symbols and punctuation
-
-#### Load & Performance:
-- ✅ **Rapid Sequential Requests** - 5 rapid generations
-- ✅ **Concurrent Requests** - Multiple simultaneous requests
-- ✅ **Generation Time** - Performance within acceptable thresholds
-- ✅ **Large Icon Display** - Memory efficiency with multiple generations
-- ✅ **Responsiveness** - UI responsiveness during/after load
-
-#### Cross-Browser:
-- ✅ **Browser Compatibility** - Same functionality across browsers
-- ✅ **Browser-Specific Events** - Proper event handling
-- ✅ **CSS Style Preservation** - Consistent styling across browsers
-
-**Coverage Score: 21 test cases**
+- ✅ **User Interactions** - Handle user input and interactions
+- ✅ **UI Element Visibility** - Verify all UI elements are visible
+- ✅ **Accessibility** - Verify accessibility features
+- ✅ **Responsive Behavior** - Test across different viewports
 
 ## Test Metrics
 
-- **Total Test Cases: 63+**
-- **Test Files: 4 spec files**
-- **Browsers Covered: 5 (Chrome, Firefox, Safari, iOS Safari, Android Chrome)**
-- **Viewports Tested: 7 (desktop, tablet, mobile variants)**
-- **Test Categories: 4 (functionality, configuration, responsive, edge-cases)**
+- **Test File: 1 spec file** (`icon-generator.spec.ts`)
+- **Browsers Covered: 3 (Chrome, Firefox, WebKit)**
+- **Test Status:** Active and maintained
 
 ## Project Structure
 
 ```
-icongenerator/
+plywright-demo-typescript/
 ├── tests/
 │   ├── specs/
-│   │   ├── 01-icon-generation.spec.ts       # Core generation tests
-│   │   ├── 02-configuration.spec.ts         # Configuration & UI tests
-│   │   ├── 03-responsive.spec.ts            # Responsive & mobile tests
-│   │   └── 04-edge-cases.spec.ts            # Edge cases & error handling
+│   │   └── icon-generator.spec.ts          # Main test suite
 │   ├── pages/
-│   │   └── IconGeneratorPage.ts             # Page Object Model
+│   │   └── IconGeneratorPage.ts            # Page Object Model
 │   ├── fixtures/
-│   │   └── fixture.ts                       # Custom Playwright fixtures
-│   ├── utils/
-│   │   └── TestHelpers.ts                   # Test utilities & helpers
-│   └── config/
-│       └── testConfig.ts                    # Test configuration
-├── playwright.config.ts                     # Playwright configuration
-├── tsconfig.json                            # TypeScript configuration
-├── package.json                             # Dependencies & scripts
-└── README.md                                # This file
+│   │   └── fixture.ts                      # Custom Playwright fixtures
+│   └── utils/
+│       └── TestHelpers.ts                  # Test utilities & helpers
+├── playwright.config.ts                    # Playwright configuration
+├── tsconfig.json                           # TypeScript configuration
+├── package.json                            # Dependencies & scripts
+└── README.md                               # This file
 ```
 
 ## Setup & Installation
@@ -200,7 +164,7 @@ npm test
 
 ### Run Specific Test File
 ```bash
-npm test -- tests/specs/01-icon-generation.spec.ts
+npm test -- tests/specs/icon-generator.spec.ts
 ```
 
 ### Run Tests in Specific Browser(s)
@@ -223,7 +187,10 @@ npm run test:debug
 # UI mode (recommended for local development)
 npm run test:ui
 
-# Headed mode (with browser visible)
+# Headed mode (with visible browser)
+npx playwright test --headed
+
+# Headed mode (with visible browser) - legacy
 npm run test:headed
 ```
 
@@ -263,9 +230,11 @@ npm run test:report
 **Example:**
 ```typescript
 // Flexible selectors that work across implementations
-readonly promptInput = page.locator(
-  'input[placeholder*="prompt" i], textarea[placeholder*="prompt" i]'
-);
+class IconGeneratorPage {
+  readonly promptInput: Locator = this.page.locator(
+          'input[placeholder*="prompt" i], textarea[placeholder*="prompt" i]'
+  );
+}
 ```
 
 ### 2. **Code Structure & Maintainability**
