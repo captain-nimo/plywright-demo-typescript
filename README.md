@@ -1,4 +1,4 @@
-# plywright-demo-typescript
+# playwright-demo-typescript
 
 Comprehensive Playwright test automation suite for the Icon Generator application.
 
@@ -116,7 +116,7 @@ Comprehensive test suite for the Icon Generator application covering:
 ## Project Structure
 
 ```
-plywright-demo-typescript/
+playwright-demo-typescript/
 ├── tests/
 │   ├── specs/
 │   │   └── icon-generator.spec.ts          # Main test suite
